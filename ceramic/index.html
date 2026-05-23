@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art on Ceramics • 3D Visualizer (Optimized)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <span class="logo">Art on Ceramics</span>
+            <span style="margin-left: 12px; color: #888; font-size: 14px;">Optimized 2026</span>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <button data-action="export" class="btn btn-secondary" style="width: auto; padding: 10px 20px;">📸 Export PNG</button>
+            <button data-action="reset" class="btn btn-secondary" style="width: auto; padding: 10px 20px;">Reset View</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Controls -->
+        <div class="sidebar">
+            <!-- Upload -->
+            <div>
+                <div class="section-title">📤 Upload Your Art</div>
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">🖼️</div>
+                    <p style="font-weight: 600; margin-bottom: 8px;">Drop image or click to upload</p>
+                    <p style="font-size: 13px; color: #aaa;">PNG / JPG • Optimized for mobile</p>
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Object Selection -->
+            <div>
+                <div class="section-title">🏺 Choose Ceramic Object</div>
+                <div class="object-grid">
+                    <div class="object-card active" data-object="plate">
+                        <div class="object-icon">🍽️</div>
+                        <div style="font-weight: 600;">Plate</div>
+                    </div>
+                    <div class="object-card" data-object="cup">
+                        <div class="object-icon">☕</div>
+                        <div style="font-weight: 600;">Mug / Cup</div>
+                    </div>
+                    <div class="object-card" data-object="bowl">
+                        <div class="object-icon">🥣</div>
+                        <div style="font-weight: 600;">Bowl</div>
+                    </div>
+                    <div class="object-card" data-object="vase">
+                        <div class="object-icon">🏺</div>
+                        <div style="font-weight: 600;">Vase</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Texture Controls -->
+            <div>
+                <div class="section-title">🎨 Texture Controls</div>
+
+                <div class="control-group">
+                    <label class="control-label" for="scale-slider">Texture Scale</label>
+                    <input type="range" id="scale-slider" min="0.5" max="4" step="0.1" value="1.5">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #888;">
+                        <span>Small</span><span>Large</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="rotation-slider">Texture Rotation</label>
+                    <input type="range" id="rotation-slider" min="0" max="360" step="1" value="0">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #888;">
+                        <span>0°</span><span>360°</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="gloss-slider">Glossiness</label>
+                    <input type="range" id="gloss-slider" min="0" max="1" step="0.05" value="0.7">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="color-picker">Color Overlay</label>
+                    <input type="color" id="color-picker" value="#ffffff" style="width: 100%; height: 42px; border: none; border-radius: 8px; background: #222;">
+                </div>
+            </div>
+
+            <button id="randomize-btn" class="btn" style="margin-top: 10px; background: #555;">🎲 Random Texture Position</button>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: #777;">
+                ⚡ Mobile Optimized • 2026 Edition
+            </div>
+        </div>
+
+        <!-- 3D Viewer -->
+        <div>
+            <div class="viewer-container">
+                <canvas id="three-canvas"></canvas>
+
+                <div class="viewer-overlay">
+                    <span>🖱️</span>
+                    <span>Drag to rotate • Scroll to zoom</span>
+                </div>
+
+                <div class="stats" id="stats">
+                    <span id="object-name">Plate</span>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div id="loading" class="loading">
+                    <span>Processing image...</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center; color: #888; font-size: 13px;">
+                Real-time ceramic material • Optimized for all devices
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Built for artists • Mobile Optimized • Dubai 2026
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
