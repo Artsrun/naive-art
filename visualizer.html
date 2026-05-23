@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art on Ceramics • 3D Visualizer • Arpine Art</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange: #E67E22;
+            --orange2: #F39C12;
+            --bg: #0f0f1a;
+            --card: rgba(255,255,255,0.05);
+            --border: rgba(255,255,255,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 16px; }
+
+        .back-link {
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--orange); }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--orange), var(--orange2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 40px;
+        }
+
+        .sidebar {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+        .upload-area {
+            border: 2px dashed var(--orange);
+            border-radius: 16px;
+            padding: 36px 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover { background: rgba(230,126,34,0.08); border-color: var(--orange2); }
+
+        .upload-icon { font-size: 44px; margin-bottom: 12px; color: var(--orange); }
+
+        .btn {
+            background: var(--orange);
+            color: white;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .btn:hover { background: var(--orange2); transform: translateY(-2px); }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--orange);
+            color: var(--orange);
+        }
+        .btn-secondary:hover { background: rgba(230,126,34,0.1); transform: none; }
+
+        .object-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .object-card {
+            background: rgba(255,255,255,0.06);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .object-card.active { border-color: var(--orange); background: rgba(230,126,34,0.12); }
+        .object-card:hover { transform: scale(1.04); }
+
+        .object-icon { font-size: 28px; margin-bottom: 6px; }
+
+        .control-group { margin-bottom: 20px; }
+
+        .control-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        input[type="range"] { width: 100%; accent-color: var(--orange); }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: #222;
+            cursor: pointer;
+        }
+
+        .viewer-container {
+            background: #0f0f1a;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        #three-canvas {
+            width: 100%;
+            height: 640px;
+            display: block;
+        }
+
+        .viewer-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #bbb;
+        }
+
+        .stats-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .viewer-hint {
+            margin-top: 16px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .kbd-hint {
+            display: inline-flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        kbd {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 2px 7px;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 28px;
+            color: #555;
+            font-size: 12px;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--orange);
+            color: white;
+            padding: 13px 26px;
+            border-radius: 12px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; padding: 20px; }
+            .sidebar { position: static; }
+            #three-canvas { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <a href="index.html" class="back-link">← Back</a>
+        <span style="color:#333;">|</span>
+        <span class="logo">Art on Ceramics</span>
+        <span style="color:#666;font-size:13px;">3D Visualizer</span>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+        <button onclick="downloadImage()" class="btn btn-secondary" style="width:auto;padding:9px 18px;">📸 Export PNG</button>
+        <button onclick="resetCamera()" class="btn btn-secondary" style="width:auto;padding:9px 18px;">Reset View</button>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <div class="section-title">📤 Upload Your Art</div>
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('image-upload').click()">
+            <div class="upload-icon">🖼️</div>
+            <p style="font-weight:600;margin-bottom:6px;">Drop image or click to upload</p>
+            <p style="font-size:12px;color:#888;">PNG / JPG · best with transparent background</p>
+            <input type="file" id="image-upload" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-title">🏺 Choose Object</div>
+        <div class="object-grid">
+            <div class="object-card active" data-object="plate" onclick="selectObject('plate')">
+                <div class="object-icon">🍽️</div>Plate
+            </div>
+            <div class="object-card" data-object="cup" onclick="selectObject('cup')">
+                <div class="object-icon">☕</div>Mug
+            </div>
+            <div class="object-card" data-object="bowl" onclick="selectObject('bowl')">
+                <div class="object-icon">🥣</div>Bowl
+            </div>
+            <div class="object-card" data-object="vase" onclick="selectObject('vase')">
+                <div class="object-icon">🏺</div>Vase
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-title">🎨 Texture Controls</div>
+
+        <div class="control-group">
+            <label class="control-label">Texture Scale</label>
+            <input type="range" id="scale-slider" min="0.5" max="4" step="0.1" value="1.5" oninput="updateTextureScale()">
+            <div class="range-labels"><span>Small</span><span>Large</span></div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Texture Rotation</label>
+            <input type="range" id="rotation-slider" min="0" max="360" step="1" value="0" oninput="updateTextureRotation()">
+            <div class="range-labels"><span>0°</span><span>360°</span></div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Glossiness</label>
+            <input type="range" id="gloss-slider" min="0" max="1" step="0.05" value="0.7" oninput="updateMaterial()">
+            <div class="range-labels"><span>Matte</span><span>Glossy</span></div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Color Overlay</label>
+            <input type="color" id="color-picker" value="#ffffff" onchange="updateMaterial()">
+        </div>
+
+        <button onclick="applyRandomTexture()" class="btn" style="background:#444;margin-bottom:10px;">🎲 Randomize Position</button>
+
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:#666;line-height:1.6;">
+            💡 Upload high-resolution images for the sharpest result. Centred designs work best on plates and bowls.
+        </div>
+    </div>
+
+    <!-- 3D Viewer -->
+    <div>
+        <div class="viewer-container">
+            <canvas id="three-canvas"></canvas>
+
+            <div class="viewer-overlay">
+                <span>🖱️</span>
+                <span>Drag to rotate · Scroll to zoom</span>
+            </div>
+
+            <div class="stats-badge" id="stats">
+                <span id="object-name">Plate</span>
+            </div>
+        </div>
+
+        <div class="viewer-hint">
+            Real-time ceramic material · PBR lighting · Instant texture mapping
+            <div class="kbd-hint">
+                <kbd>R</kbd> Reset view
+                <kbd>D</kbd> Download PNG
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <a href="index.html" style="color:#555;text-decoration:none;">← Back to Arpine Art</a>
+    &nbsp;·&nbsp; Visualize your folk art on real ceramics · Dubai 2026
+</div>
+
+<div id="toast"></div>
+
+<script>
+    let scene, camera, renderer;
+    let currentObject = null;
+    let currentTexture = null;
+    let material = null;
+
+    let textureScale = 1.5;
+    let textureRotation = 0;
+    let glossiness = 0.7;
+    let colorOverlay = '#ffffff';
+
+    function initThreeJS() {
+        const canvas = document.getElementById('three-canvas');
+
+        renderer = new THREE.WebGLRenderer({
+            canvas,
+            antialias: true,
+            alpha: true,
+            preserveDrawingBuffer: true
+        });
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+        camera.position.set(0, 0, 4.5);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
+        scene.add(hemiLight);
+
+        const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight1.position.set(5, 10, 7);
+        dirLight1.castShadow = true;
+        scene.add(dirLight1);
+
+        const dirLight2 = new THREE.DirectionalLight(0xffe4c4, 0.6);
+        dirLight2.position.set(-8, 4, -6);
+        scene.add(dirLight2);
+
+        const envLight = new THREE.DirectionalLight(0xffffff, 0.4);
+        envLight.position.set(0, -5, 0);
+        scene.add(envLight);
+
+        createPlate();
+        setupControls();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            const w = canvas.clientWidth;
+            const h = canvas.clientHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+    }
+
+    function setupControls() {
+        const canvas = document.getElementById('three-canvas');
+        let isDragging = false;
+        let prevX = 0, prevY = 0;
+
+        canvas.addEventListener('mousedown', e => {
+            isDragging = true;
+            prevX = e.clientX;
+            prevY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        window.addEventListener('mousemove', e => {
+            if (!isDragging || !currentObject) return;
+            currentObject.rotation.y += (e.clientX - prevX) * 0.005;
+            currentObject.rotation.x += (e.clientY - prevY) * 0.005;
+            prevX = e.clientX;
+            prevY = e.clientY;
+        });
+
+        canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            camera.position.z += e.deltaY * 0.01;
+            camera.position.z = Math.max(2, Math.min(12, camera.position.z));
+        });
+
+        let touchStartX = 0, touchStartY = 0;
+        canvas.addEventListener('touchstart', e => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }
+        });
+        canvas.addEventListener('touchend', () => { isDragging = false; });
+        canvas.addEventListener('touchmove', e => {
+            if (!isDragging || !currentObject || e.touches.length !== 1) return;
+            currentObject.rotation.y += (e.touches[0].clientX - touchStartX) * 0.008;
+            currentObject.rotation.x += (e.touches[0].clientY - touchStartY) * 0.008;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+    }
+
+    function createPlate() {
+        if (currentObject) scene.remove(currentObject);
+
+        const geometry = new THREE.CylinderGeometry(2.2, 2.2, 0.25, 64);
+        material = new THREE.MeshPhongMaterial({
+            color: 0xeeeeee, shininess: 80, specular: 0x222222, flatShading: false
+        });
+        currentObject = new THREE.Mesh(geometry, material);
+        currentObject.castShadow = true;
+        scene.add(currentObject);
+
+        const rimGeo = new THREE.CylinderGeometry(2.25, 2.25, 0.28, 64);
+        const rimMat = new THREE.MeshPhongMaterial({ color: 0xcccccc, shininess: 60 });
+        currentObject.add(new THREE.Mesh(rimGeo, rimMat));
+
+        document.getElementById('object-name').textContent = '🍽️ Ceramic Plate';
+    }
+
+    function createCup() {
+        if (currentObject) scene.remove(currentObject);
+        const group = new THREE.Group();
+
+        material = new THREE.MeshPhongMaterial({ color: 0xeeeeee, shininess: 90, specular: 0x333333 });
+
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 0.95, 2.8, 48), material);
+        body.castShadow = true;
+        group.add(body);
+
+        const handle = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.18, 16, 48, Math.PI * 1.3), material);
+        handle.rotation.z = Math.PI / 2;
+        handle.position.set(1.35, 0.3, 0);
+        group.add(handle);
+
+        const rim = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.05, 1.05, 0.15, 48),
+            new THREE.MeshPhongMaterial({ color: 0xdddddd })
+        );
+        rim.position.y = 1.35;
+        group.add(rim);
+
+        currentObject = group;
+        scene.add(currentObject);
+        document.getElementById('object-name').textContent = '☕ Ceramic Mug';
+    }
+
+    function createBowl() {
+        if (currentObject) scene.remove(currentObject);
+
+        material = new THREE.MeshPhongMaterial({ color: 0xeeeeee, shininess: 75, specular: 0x222222 });
+        currentObject = new THREE.Mesh(
+            new THREE.SphereGeometry(2.0, 64, 32, 0, Math.PI * 2, 0, Math.PI * 0.65),
+            material
+        );
+        currentObject.castShadow = true;
+        scene.add(currentObject);
+        document.getElementById('object-name').textContent = '🥣 Ceramic Bowl';
+    }
+
+    function createVase() {
+        if (currentObject) scene.remove(currentObject);
+        const group = new THREE.Group();
+
+        material = new THREE.MeshPhongMaterial({ color: 0xeeeeee, shininess: 85, specular: 0x333333 });
+
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 0.7, 3.5, 48), material);
+        body.castShadow = true;
+        group.add(body);
+
+        const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.85, 1.2, 48), material);
+        neck.position.y = 2.2;
+        group.add(neck);
+
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.3, 48), material);
+        base.position.y = -1.75;
+        group.add(base);
+
+        currentObject = group;
+        scene.add(currentObject);
+        document.getElementById('object-name').textContent = '🏺 Ceramic Vase';
+    }
+
+    function selectObject(type) {
+        document.querySelectorAll('.object-card').forEach(c => c.classList.remove('active'));
+        document.querySelector(`[data-object="${type}"]`).classList.add('active');
+
+        if (type === 'plate') createPlate();
+        else if (type === 'cup') createCup();
+        else if (type === 'bowl') createBowl();
+        else if (type === 'vase') createVase();
+
+        if (currentTexture) {
+            setTimeout(() => applyTextureToObject(currentTexture), 100);
+        }
+    }
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+                const texture = new THREE.Texture(img);
+                texture.needsUpdate = true;
+                currentTexture = texture;
+                applyTextureToObject(texture);
+                showToast('✅ Artwork applied successfully!');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function applyTextureToObject(texture) {
+        if (!currentObject || !material) return;
+
+        if (currentObject.children && currentObject.children.length > 0) {
+            currentObject.children.forEach(child => {
+                if (child.material) { child.material.map = texture; child.material.needsUpdate = true; }
+            });
+        }
+        material.map = texture;
+        material.needsUpdate = true;
+
+        updateTextureScale();
+        updateTextureRotation();
+        updateMaterial();
+    }
+
+    function updateTextureScale() {
+        textureScale = parseFloat(document.getElementById('scale-slider').value);
+        if (!currentTexture) return;
+        currentTexture.repeat.set(textureScale, textureScale);
+        currentTexture.wrapS = THREE.RepeatWrapping;
+        currentTexture.wrapT = THREE.RepeatWrapping;
+        currentTexture.needsUpdate = true;
+    }
+
+    function updateTextureRotation() {
+        textureRotation = parseFloat(document.getElementById('rotation-slider').value);
+        if (!currentTexture) return;
+        currentTexture.rotation = (textureRotation * Math.PI) / 180;
+        currentTexture.needsUpdate = true;
+    }
+
+    function updateMaterial() {
+        if (!material) return;
+        glossiness = parseFloat(document.getElementById('gloss-slider').value);
+        colorOverlay = document.getElementById('color-picker').value;
+        material.shininess = glossiness * 120;
+        material.color.set(colorOverlay);
+        material.needsUpdate = true;
+    }
+
+    function applyRandomTexture() {
+        if (!currentTexture) { showToast('Upload an image first'); return; }
+        const s = (Math.random() * 2.5) + 0.8;
+        const r = Math.random() * 360;
+        document.getElementById('scale-slider').value = s;
+        document.getElementById('rotation-slider').value = r;
+        textureScale = s; textureRotation = r;
+        currentTexture.repeat.set(s, s);
+        currentTexture.rotation = (r * Math.PI) / 180;
+        currentTexture.needsUpdate = true;
+        showToast('🎲 Random position applied');
+    }
+
+    function resetCamera() {
+        if (!camera || !currentObject) return;
+        camera.position.set(0, 0, 4.5);
+        currentObject.rotation.set(0, 0, 0);
+        showToast('View reset');
+    }
+
+    function downloadImage() {
+        const canvas = document.getElementById('three-canvas');
+        const link = document.createElement('a');
+        link.download = 'ceramic-art-preview.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('📸 Image downloaded!');
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.style.display = 'block';
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => { t.style.display = 'none'; }, 2800);
+    }
+
+    window.onload = () => {
+        initThreeJS();
+        document.getElementById('scale-slider').value = textureScale;
+        document.getElementById('rotation-slider').value = textureRotation;
+        document.getElementById('gloss-slider').value = glossiness;
+
+        setTimeout(() => showToast('🎨 Upload your artwork to begin'), 900);
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'r' || e.key === 'R') resetCamera();
+            if (e.key === 'd' || e.key === 'D') downloadImage();
+        });
+    };
+</script>
+</body>
+</html>

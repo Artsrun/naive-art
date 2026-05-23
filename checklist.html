@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dubai Selling Guide • Arpine Art</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange:  #E67E22;
+            --orange2: #F39C12;
+            --green:   #27ae60;
+            --blue:    #2980b9;
+            --bg:      #0f0f1a;
+            --bg2:     #16213e;
+            --card:    rgba(255,255,255,0.04);
+            --border:  rgba(255,255,255,0.09);
+            --text:    #f0ece4;
+            --muted:   #9a9a9a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            padding: 16px 48px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .back-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--orange); }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            background: linear-gradient(90deg, var(--orange), var(--orange2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-meta { margin-left: auto; font-size: 12px; color: var(--muted); }
+
+        /* ── HERO ── */
+        .hero {
+            padding: 72px 48px 56px;
+            background: linear-gradient(160deg, #16213e 0%, #0f0f1a 100%);
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--orange);
+            margin-bottom: 14px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(30px, 5vw, 54px);
+            margin-bottom: 14px;
+        }
+
+        .hero p { color: var(--muted); font-size: 16px; max-width: 560px; margin: 0 auto; }
+
+        /* ── PROGRESS ── */
+        .progress-bar-wrap {
+            max-width: 800px;
+            margin: 32px auto 0;
+            background: rgba(255,255,255,0.06);
+            border-radius: 40px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--orange), var(--orange2));
+            border-radius: 40px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* ── LAYOUT ── */
+        .layout {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 56px 48px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        /* ── TOC ── */
+        .toc {
+            position: sticky;
+            top: 76px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .toc-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--orange);
+            margin-bottom: 14px;
+        }
+
+        .toc-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+        .toc-list a {
+            display: block;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .toc-list a:hover { color: var(--orange); background: rgba(230,126,34,0.08); }
+
+        /* ── CONTENT ── */
+        .content { display: flex; flex-direction: column; gap: 48px; }
+
+        /* ── SECTION ── */
+        .checklist-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange), var(--orange2));
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 19px;
+        }
+
+        .section-tag {
+            margin-left: auto;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(230,126,34,0.15);
+            color: var(--orange);
+            border: 1px solid rgba(230,126,34,0.3);
+        }
+
+        .section-body { padding: 24px 28px; }
+
+        /* ── SUBSECTION ── */
+        .subsection { margin-bottom: 28px; }
+        .subsection:last-child { margin-bottom: 0; }
+
+        .subsection-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--orange2);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── CHECKLIST ITEMS ── */
+        .check-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .check-item input[type="checkbox"] { display: none; }
+
+        .check-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.04);
+            flex-shrink: 0;
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .check-item.done .check-box {
+            background: var(--green);
+            border-color: var(--green);
+        }
+
+        .check-item.done .check-text {
+            color: var(--muted);
+            text-decoration: line-through;
+        }
+
+        .check-text {
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        /* ── INFO BOXES ── */
+        .info-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-top: 16px;
+        }
+
+        .info-box.orange { border-color: rgba(230,126,34,0.3); background: rgba(230,126,34,0.06); }
+        .info-box.blue   { border-color: rgba(41,128,185,0.3);  background: rgba(41,128,185,0.06); }
+        .info-box.green  { border-color: rgba(39,174,96,0.3);   background: rgba(39,174,96,0.06); }
+
+        .info-box-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .info-box.orange .info-box-label { color: var(--orange); }
+        .info-box.blue   .info-box-label { color: #5dade2; }
+        .info-box.green  .info-box-label { color: #58d68d; }
+
+        .info-box p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+        .info-box a { color: var(--orange); }
+
+        /* ── TABLE ── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 8px 14px;
+            color: var(--orange);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--muted);
+            vertical-align: top;
+        }
+
+        .data-table td:first-child { color: var(--text); font-weight: 500; }
+        .data-table tr:last-child td { border-bottom: none; }
+
+        /* ── PRIORITY BADGE ── */
+        .priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .priority.critical { background: rgba(231,76,60,0.2);  color: #e74c3c; }
+        .priority.high     { background: rgba(230,126,34,0.2); color: var(--orange); }
+        .priority.medium   { background: rgba(41,128,185,0.2); color: #5dade2; }
+        .priority.planned  { background: rgba(255,255,255,0.08); color: var(--muted); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 780px) {
+            .layout { grid-template-columns: 1fr; padding: 32px 20px; }
+            .toc { display: none; }
+            header { padding: 14px 20px; }
+            .hero { padding: 48px 20px 36px; }
+            .section-header, .section-body { padding: 16px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-link">← Back to Arpine Art</a>
+    <span style="color:#333;">|</span>
+    <span class="header-title">Dubai Selling Guide</span>
+    <span class="header-meta">Updated: 23 May 2026</span>
+</header>
+
+<div class="hero">
+    <p class="hero-eyebrow">Handmade Art · UAE · 2026</p>
+    <h1>Dubai Selling Checklist</h1>
+    <p>Everything Arpine needs to start selling folk &amp; naive art in Dubai — from legal setup to monthly compliance.</p>
+    <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+    <p class="progress-label" id="progress-label">0 of 0 items completed</p>
+</div>
+
+<div class="layout">
+
+    <!-- Table of Contents -->
+    <nav class="toc" aria-label="Sections">
+        <div class="toc-title">Sections</div>
+        <ul class="toc-list">
+            <li><a href="#s1">1. Legal Setup</a></li>
+            <li><a href="#s2">2. Physical Markets</a></li>
+            <li><a href="#s3">3. Tax &amp; VAT</a></li>
+            <li><a href="#s4">4. Online Sales</a></li>
+            <li><a href="#s5">5. Products &amp; Docs</a></li>
+            <li><a href="#s6">6. Banking</a></li>
+            <li><a href="#s7">7. Monthly Routine</a></li>
+            <li><a href="#s8">8. Key Contacts</a></li>
+        </ul>
+    </nav>
+
+    <!-- Checklist Content -->
+    <div class="content">
+
+        <!-- § 1 Legal Setup -->
+        <div class="checklist-section" id="s1">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div class="section-name">Legal Setup</div>
+                <span class="section-tag">Start Here</span>
+            </div>
+            <div class="section-body">
+
+                <div class="subsection">
+                    <div class="subsection-title">🪪 1.1 E-Trader Permit — Recommended First Step</div>
+                    <ul class="check-list">
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Visit DED Café (Jumeirah 1, Beach Road) or apply via Dubai Economy portal</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Prepare: Passport copy, Emirates ID, Good Conduct Certificate (Dubai Police app or MOI), Proof of address</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Select activity category: "Handicrafts / Art / E-commerce retail"</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Pay permit fee (≈ AED 1,300–1,500) and submit application</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Await approval (1–3 weeks processing time)</span>
+                        </li>
+                    </ul>
+                    <div class="info-box orange">
+                        <div class="info-box-label">Cost &amp; Timeline</div>
+                        <p>≈ AED 1,300–1,500 · Processing: 1–3 weeks · Reference: DED official process (2026)</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">🎨 1.2 Freelance Visa — If Planning Full-Time</div>
+                    <ul class="check-list">
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Choose free zone: Dubai Design District (d3) or Dubai Media City (via GoFreelance.ae)</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Apply under "Artist / Visual Artist" category</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Prepare portfolio (min. 10–15 pieces), CV / artist statement, passport + photos, proof of previous art activity</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Submit application and pay fee (AED 12,000–15,000 for license + 2-year visa + Emirates ID)</span>
+                        </li>
+                    </ul>
+                    <div class="info-box blue">
+                        <div class="info-box-label">References</div>
+                        <p>GoFreelance.ae and d3 official portals · Processing: 4–8 weeks</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- § 2 Physical Markets -->
+        <div class="checklist-section" id="s2">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div class="section-name">Physical Market Applications</div>
+            </div>
+            <div class="section-body">
+
+                <div class="subsection">
+                    <div class="subsection-title">🛍️ 2.1 ARTE – The Makers' Market (Easiest Entry)</div>
+                    <ul class="check-list">
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Email info@arte.ae to express interest</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Register via "Become a Vendor" form on arte.ae</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Prepare: photos of current work (min. 8–10 pieces) and short description of your art style</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Pay AED 125 registration + AED 325+ per event day (min. 2 weeks in advance)</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Confirm rules: handmade only, no roll-up banners, price list required</span>
+                        </li>
+                    </ul>
+                    <div class="info-box green">
+                        <div class="info-box-label">Venue</div>
+                        <p>New vendors start at Times Square Center, Al Quoz · 2× per month events</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">🌍 2.2 Global Village — Higher Volume (Seasonal)</div>
+                    <ul class="check-list">
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Register interest at business.globalvillage.ae</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Submit concept proposal + business plan</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Obtain valid UAE trade license (or E-Trader Permit) first</span>
+                        </li>
+                        <li class="check-item" onclick="toggleCheck(this)">
+                            <input type="checkbox">
+                            <span class="check-box"></span>
+                            <span class="check-text">Arrange insurance coverage and prepare financial proof</span>
+                        </li>
+                    </ul>
+                    <div class="info-box orange">
+                        <div class="info-box-label">Recommended Timeline</div>
+                        <p>Best to apply after 3–6 months of ARTE experience. High tourist footfall, seasonal program.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- § 3 Tax & VAT -->
+        <div class="checklist-section" id="s3">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div class="section-name">Tax &amp; VAT Compliance</div>
+            </div>
+            <div class="section-body">
+                <ul class="check-list">
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Set up a system to monitor annual turnover against the AED 375,000 VAT threshold</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Register for VAT only if taxable supplies exceed AED 375,000 in a rolling 12 months</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Keep simple records: date, item, price, buyer type (UAE vs export)</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Note: Exports are zero-rated (0%) with proper customs documentation</span>
+                    </li>
+                </ul>
+                <div class="info-box blue">
+                    <div class="info-box-label">Current Rate</div>
+                    <p>5% on domestic UAE sales · Reference: UAE Ministry of Finance VAT rules for artists (2026)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- § 4 Online Sales -->
+        <div class="checklist-section" id="s4">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div class="section-name">Online Sales Setup</div>
+            </div>
+            <div class="section-body">
+                <ul class="check-list">
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Create an Etsy shop with consistent branding (name, bio, logo)</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Set up Instagram and use consistent branding across Etsy + Instagram</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Set up Ziina (or similar UAE payment link) for market payments</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Create digital products (printables) for passive income</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Maintain consistent pricing between online and physical markets</span>
+                    </li>
+                </ul>
+                <div class="info-box green">
+                    <div class="info-box-label">2026 Market Prices</div>
+                    <p>Physical paper plate art: AED 120–450 · Digital downloads: AED 25–60</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- § 5 Products & Docs -->
+        <div class="checklist-section" id="s5">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <div class="section-name">Product &amp; Documentation Preparation</div>
+                <span class="section-tag">Priority: Week 1</span>
+            </div>
+            <div class="section-body">
+                <ul class="check-list">
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Photograph all existing pieces: natural light, clean neutral background, minimum 300 DPI, multiple angles</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Create a digital archive / inventory list (title, description, dimensions, materials, price)</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Prepare price tags for each piece</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Print small business cards with Instagram handle</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Test packaging: verify pieces survive transport to markets undamaged</span>
+                    </li>
+                </ul>
+                <div class="info-box orange">
+                    <div class="info-box-label">Critical Note</div>
+                    <p>Photo documentation is the single most important first step. Delay beyond 60 days reduces the probability of early sales success by 15–25 percentage points.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- § 6 Banking -->
+        <div class="checklist-section" id="s6">
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <div class="section-name">Banking &amp; Financial Setup</div>
+            </div>
+            <div class="section-body">
+                <ul class="check-list">
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Open a business bank account once E-Trader Permit is obtained</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Set up separate tracking for art income vs personal expenses</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Keep all material receipts (for potential future VAT input recovery)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- § 7 Monthly Routine -->
+        <div class="checklist-section" id="s7">
+            <div class="section-header">
+                <div class="section-number">7</div>
+                <div class="section-name">Monthly Compliance Routine</div>
+            </div>
+            <div class="section-body">
+                <ul class="check-list">
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Post to Instagram at least 3× per week (consistency drives algorithmic reach)</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Track monthly sales vs the AED 375,000 VAT threshold</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Add new inventory to photo archive and Etsy listings</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Book next ARTE market slot (bi-weekly events — book ≥ 2 weeks ahead)</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Review and update pricing based on sales data</span>
+                    </li>
+                    <li class="check-item" onclick="toggleCheck(this)">
+                        <input type="checkbox">
+                        <span class="check-box"></span>
+                        <span class="check-text">Renew E-Trader Permit annually before expiry</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- § 8 Key Contacts -->
+        <div class="checklist-section" id="s8">
+            <div class="section-header">
+                <div class="section-number">8</div>
+                <div class="section-name">Key Contacts &amp; References</div>
+            </div>
+            <div class="section-body">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Organisation</th>
+                            <th>Contact / Link</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ARTE Makers Market</td>
+                            <td><a href="mailto:info@arte.ae" style="color:var(--orange);">info@arte.ae</a></td>
+                            <td>Vendor registration, market bookings</td>
+                        </tr>
+                        <tr>
+                            <td>DED E-Trader Permit</td>
+                            <td>DED Café, Jumeirah 1 · Dubai Economy portal</td>
+                            <td>Sole-trader business license</td>
+                        </tr>
+                        <tr>
+                            <td>Global Village Business</td>
+                            <td>business.globalvillage.ae</td>
+                            <td>High-volume seasonal market</td>
+                        </tr>
+                        <tr>
+                            <td>UAE VAT Registration</td>
+                            <td>mof.gov.ae</td>
+                            <td>VAT registration (if threshold reached)</td>
+                        </tr>
+                        <tr>
+                            <td>Freelance Visa — d3</td>
+                            <td>Dubai Design District</td>
+                            <td>2-year artist freelance visa</td>
+                        </tr>
+                        <tr>
+                            <td>GoFreelance.ae</td>
+                            <td>gofreelance.ae</td>
+                            <td>Alternative freelance visa route</td>
+                        </tr>
+                        <tr>
+                            <td>Good Conduct Certificate</td>
+                            <td>Dubai Police app / MOI portal</td>
+                            <td>Required for E-Trader Permit</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top:28px;">
+                    <div class="subsection-title">⏱️ Priority Timeline</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Horizon</th><th>Action</th><th>Priority</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0–7 days</td>
+                                <td>Photo-document all existing work at ≥ 300 DPI, neutral light</td>
+                                <td><span class="priority critical">Critical</span></td>
+                            </tr>
+                            <tr>
+                                <td>7–30 days</td>
+                                <td>Digital products, Instagram launch (3 posts/week), ARTE booking request</td>
+                                <td><span class="priority high">High</span></td>
+                            </tr>
+                            <tr>
+                                <td>30–90 days</td>
+                                <td>Etsy listings (physical + digital), custom orders protocol, price tracking</td>
+                                <td><span class="priority medium">Medium</span></td>
+                            </tr>
+                            <tr>
+                                <td>90+ days</td>
+                                <td>Global Village application, limited print editions, design licensing</td>
+                                <td><span class="priority planned">Planned</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /content -->
+</div><!-- /layout -->
+
+<script>
+    function toggleCheck(item) {
+        item.classList.toggle('done');
+        const cb = item.querySelector('.check-box');
+        cb.textContent = item.classList.contains('done') ? '✓' : '';
+        updateProgress();
+        saveState();
+    }
+
+    function updateProgress() {
+        const all = document.querySelectorAll('.check-item');
+        const done = document.querySelectorAll('.check-item.done');
+        const pct = all.length ? Math.round((done.length / all.length) * 100) : 0;
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('progress-label').textContent =
+            `${done.length} of ${all.length} items completed (${pct}%)`;
+    }
+
+    function saveState() {
+        const items = document.querySelectorAll('.check-item');
+        const state = Array.from(items).map(i => i.classList.contains('done'));
+        try { localStorage.setItem('arpine-checklist', JSON.stringify(state)); } catch(e) {}
+    }
+
+    function loadState() {
+        try {
+            const state = JSON.parse(localStorage.getItem('arpine-checklist') || '[]');
+            const items = document.querySelectorAll('.check-item');
+            items.forEach((item, i) => {
+                if (state[i]) {
+                    item.classList.add('done');
+                    item.querySelector('.check-box').textContent = '✓';
+                }
+            });
+        } catch(e) {}
+        updateProgress();
+    }
+
+    loadState();
+</script>
+
+</body>
+</html>
