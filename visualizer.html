@@ -268,6 +268,22 @@
             .sidebar { position: static; }
             #three-canvas { height: 400px; }
         }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 14px 20px;
+            }
+            .header-left { flex-wrap: wrap; gap: 10px; }
+            .header > div:last-child { width: 100%; }
+            .header > div:last-child .btn { flex: 1; }
+            .logo { font-size: 20px; }
+            #three-canvas { height: 320px; }
+            .container { padding: 16px; gap: 24px; }
+            .sidebar { padding: 22px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -487,11 +503,12 @@
         canvas.addEventListener('touchend', () => { isDragging = false; });
         canvas.addEventListener('touchmove', e => {
             if (!isDragging || !currentObject || e.touches.length !== 1) return;
+            e.preventDefault();
             currentObject.rotation.y += (e.touches[0].clientX - touchStartX) * 0.008;
             currentObject.rotation.x += (e.touches[0].clientY - touchStartY) * 0.008;
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
-        });
+        }, { passive: false });
     }
 
     function createPlate() {
