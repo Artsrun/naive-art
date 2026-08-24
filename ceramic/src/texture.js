@@ -11,7 +11,9 @@ export function rotationDegToRad(degrees) {
 // the result is deterministic under test.
 export function randomTextureParams(rng = Math.random) {
   return {
-    scale: Number((rng() * 2.5 + 0.8).toFixed(2)),
-    rotation: Math.round(rng() * 360),
+    scale: Number(
+      (rng() * (SCALE_RANGE.max - SCALE_RANGE.min) + SCALE_RANGE.min).toFixed(2)
+    ),
+    rotation: Math.round(rng() * (ROTATION_RANGE.max - ROTATION_RANGE.min) + ROTATION_RANGE.min),
   };
 }

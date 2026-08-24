@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rotationDegToRad, randomTextureParams } from '../src/texture.js';
+import { rotationDegToRad, randomTextureParams, SCALE_RANGE, ROTATION_RANGE } from '../src/texture.js';
 
 test('rotationDegToRad matches degree-to-radian conversion', () => {
   assert.equal(rotationDegToRad(360), 2 * Math.PI);
@@ -9,8 +9,8 @@ test('rotationDegToRad matches degree-to-radian conversion', () => {
 test('randomTextureParams stays within documented bounds', () => {
   for (const sample of [0, 0.5, 0.999]) {
     const { scale, rotation } = randomTextureParams(() => sample);
-    assert.ok(scale >= 0.8 && scale <= 3.3, `scale ${scale} in range`);
-    assert.ok(rotation >= 0 && rotation <= 360, `rotation ${rotation} in range`);
+    assert.ok(scale >= SCALE_RANGE.min && scale <= SCALE_RANGE.max, `scale ${scale} in range`);
+    assert.ok(rotation >= ROTATION_RANGE.min && rotation <= ROTATION_RANGE.max, `rotation ${rotation} in range`);
   }
 });
 

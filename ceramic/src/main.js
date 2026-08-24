@@ -39,11 +39,17 @@ function setupPointerControls(canvas, viz, isMobile) {
   window.addEventListener('mouseup', end);
 
   canvas.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 1) start(e.touches[0].clientX, e.touches[0].clientY);
-  });
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      start(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
   canvas.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 1) move(e.touches[0].clientX, e.touches[0].clientY);
-  });
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      move(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
   canvas.addEventListener('touchend', end);
 
   canvas.addEventListener(
@@ -74,11 +80,23 @@ function init() {
   setupPointerControls(canvas, viz, isMobile);
   window.addEventListener('resize', () => viz.resize());
 
+  const selectCard = (card) => {
+    document.querySelectorAll('.object-card').forEach((c) => {
+      c.classList.remove('active');
+      c.setAttribute('aria-pressed', 'false');
+    });
+    card.classList.add('active');
+    card.setAttribute('aria-pressed', 'true');
+    viz.selectObject(card.dataset.object);
+  };
+
   document.querySelectorAll('.object-card').forEach((card) => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.object-card').forEach((c) => c.classList.remove('active'));
-      card.classList.add('active');
-      viz.selectObject(card.dataset.object);
+    card.addEventListener('click', () => selectCard(card));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectCard(card);
+      }
     });
   });
 
@@ -109,14 +127,22 @@ function init() {
       .catch(() => showToast('⚠️ Could not load that image'))
       .finally(() => {
         loading.style.display = 'none';
+        fileInput.value = '';
       });
   });
 
-  document.getElementById('upload-area').addEventListener('click', (e) => {
+  const uploadArea = document.getElementById('upload-area');
+  uploadArea.addEventListener('click', (e) => {
     // The programmatic click below re-bubbles to this handler; ignore it to
     // avoid reopening the picker in a loop.
     if (e.target === fileInput) return;
     fileInput.click();
+  });
+  uploadArea.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInput.click();
+    }
   });
 
   document.getElementById('randomize-btn').addEventListener('click', () => {

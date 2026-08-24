@@ -146,8 +146,8 @@ export class CeramicVisualizer {
     this._applyMaterial();
   }
 
-  // Decodes a File into a downscaled canvas texture. Resolves with the
-  // randomization-free placement already applied; rejects on decode failure.
+  // Decodes a File into a downscaled canvas texture. Applies the current
+  // textureScale/textureRotation settings; rejects on decode failure.
   loadImageFile(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
