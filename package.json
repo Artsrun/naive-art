@@ -1,0 +1,10 @@
+{
+  "name": "naive-art",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arpine Art — naive/folk art portfolio and ceramic 3D visualizer",
+  "scripts": {
+    "test": "node --test \"ceramic/tests/**/*.test.js\""
+  }
+}
