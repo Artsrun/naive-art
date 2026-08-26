@@ -1,7 +1,7 @@
 import { clamp } from './utils.js';
 import { maxTextureSize } from './device.js';
 import { computeFitDimensions } from './imageResize.js';
-import { rotationDegToRad, randomTextureParams } from './texture.js';
+import { rotationDegToRad, randomTextureParams, applyRotationPivot } from './texture.js';
 import { glossToShininess } from './material.js';
 import { buildObject } from './geometry.js';
 
@@ -104,6 +104,7 @@ export class CeramicVisualizer {
     texture.wrapS = this.THREE.RepeatWrapping;
     texture.wrapT = this.THREE.RepeatWrapping;
     texture.repeat.set(this.textureScale, this.textureScale);
+    applyRotationPivot(texture);
     texture.rotation = rotationDegToRad(this.textureRotation);
     texture.needsUpdate = true;
   }
