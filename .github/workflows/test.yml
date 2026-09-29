@@ -1,0 +1,23 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Pinned to the version the suite is known to pass on. The test
+          # script relies on node --test expanding a glob, which older
+          # release lines do not do.
+          node-version: '22'
+
+      # No install step on purpose: the project declares no dependencies and
+      # ships no lockfile, so `npm ci` would fail. `npm test` needs only
+      # node's built-in test runner.
+      - run: npm test
