@@ -1,7 +1,6 @@
+import * as THREE from 'three';
 import { detectIsMobile } from './device.js';
 import { CeramicVisualizer } from './visualizer.js';
-
-const THREE = window.THREE;
 
 function showToast(message, timeout = 2600) {
   const toast = document.getElementById('toast');

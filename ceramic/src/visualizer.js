@@ -168,6 +168,10 @@ export class CeramicVisualizer {
           canvas.getContext('2d').drawImage(img, 0, 0, width, height);
 
           const texture = new this.THREE.Texture(canvas);
+          // three.js manages colour space explicitly since r152; an untagged
+          // texture is treated as linear and renders washed out. Guarded so the
+          // test stubs, which carry no colour-space constants, still work.
+          if (this.THREE.SRGBColorSpace) texture.colorSpace = this.THREE.SRGBColorSpace;
           texture.needsUpdate = true;
           this.setTexture(texture);
           resolve(texture);
