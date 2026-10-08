@@ -276,7 +276,7 @@ html:not(.js) .to3d{display:none}
 .cfg-field legend{float:left;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;width:100%;margin-bottom:12px;padding:0;font-size:14px}
 .cfg-field legend+*{clear:both}
 .cfg-field legend b{font-weight:500}
-.cfg-pieces{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.cfg-pieces{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:8px}
 .cfg-thumb{display:block;aspect-ratio:4/5;border:1px solid var(--line);background:var(--paper-2);overflow:hidden;cursor:pointer;transition:border-color .2s}
 .cfg-thumb:hover,.cfg-size:hover{border-color:var(--muted)}
 .cfg-thumb:has(input:checked){border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
@@ -386,7 +386,7 @@ html:not(.js) .to3d{display:none}
   display:flex; align-items:center; justify-content:center; text-align:center;
   width:100%; aspect-ratio:600/750; padding:.5rem;
   font-size:.8rem; line-height:1.2; letter-spacing:.02em;
-  color:var(--ink,#2b2724); background:var(--paper2,#e7e1d8);
+  color:var(--ink); background:var(--paper-2);
   border-radius:inherit;
 }
 

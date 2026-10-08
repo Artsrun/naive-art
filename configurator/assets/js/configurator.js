@@ -144,14 +144,15 @@
    * The image never leaves the browser: it is read with FileReader and handed
    * straight to the viewer as a texture. A piece may also carry its own `art`
    * file in pieces.js, which is applied whenever no upload is in play. */
-  const art = { img: null, scale: 1, rot: 0 };
+  const art = { img: null, scale: 1, rot: 0, uploaded: false };
   const artOut = $('[data-out="art"]');
   const artClear = $('.cfg-art-clear');
   const artRanges = $('.cfg-art-ranges');
   const artFile = $('#cfg-art-file');
 
-  function showArt(img, label) {
+  function showArt(img, label, uploaded) {
     art.img = img;
+    art.uploaded = !!uploaded;
     if (viewer) {
       viewer.setArtwork(img);
       viewer.setArtworkAdjust({ scale: art.scale, rotation: art.rot });
@@ -170,13 +171,31 @@
     return img;
   }
 
+  // A photo straight off a phone can be 4000px+ on its longest edge. Uploading
+  // that to the GPU untouched wastes memory and can fail outright on a mobile
+  // device, so it is drawn down to a sane edge first.
+  const MAX_ART_EDGE = window.matchMedia('(max-width: 700px)').matches ? 1024 : 2048;
+  function fitArt(img) {
+    const longest = Math.max(img.naturalWidth, img.naturalHeight);
+    if (!longest || longest <= MAX_ART_EDGE) return img;
+    const k = MAX_ART_EDGE / longest;
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.naturalWidth * k);
+    c.height = Math.round(img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c;
+  }
+
   if (artFile) artFile.addEventListener('change', e => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+    const fail = () => { if (status) status.textContent = t('cfg.artFail'); };
     const reader = new FileReader();
+    reader.onerror = fail;
     reader.onload = ev => {
       const img = new Image();
-      img.onload = () => showArt(img, file.name.replace(/\.[^.]+$/, ''));
+      img.onerror = fail;                      // e.g. HEIC, or a truncated file
+      img.onload = () => showArt(fitArt(img), file.name.replace(/\.[^.]+$/, ''), true);
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
@@ -233,9 +252,16 @@
     const is3d = state.view < 0 && !no3d;
     view.classList.toggle('is-photo', !is3d);
     photo.hidden = is3d;
-    if (!is3d) {
-      photo.src = img(p.photos[Math.max(0, state.view)], 1000);
+    // Without WebGL the photo strip is the fallback -- but these pieces have no
+    // photographs yet, so there is nothing to fall back to. Show the message
+    // rather than request assets/img/undefined-1000.webp.
+    const shot = is3d ? null : p.photos[Math.max(0, state.view)];
+    photo.hidden = is3d || !shot;
+    if (shot) {
+      photo.src = img(shot, 1000);
       photo.alt = t(p.name);
+    } else if (!is3d) {
+      photo.removeAttribute('src');
     }
     $$('[data-view]', rail).forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.view) === state.view)));
     syncActive();
@@ -247,6 +273,8 @@
     state.piece = id;
     if (!state.glazePicked) state.glaze = p.glaze;
     state.view = no3d ? 0 : -1;
+    // the previous piece's own painting must not linger on the new one
+    if (!art.uploaded) { showArt(null, ''); pieceArt(); }
     renderPieces();
     renderSizes();
     renderGlazes();

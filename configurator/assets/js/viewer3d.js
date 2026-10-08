@@ -613,13 +613,14 @@ export function createViewer(host, { onReady } = {}) {
         U.uArtOn.value = 1;
       }
       if (prev && prev !== U.uArt.value) prev.dispose();
-      frame(false);
+      // No frame(): the artwork changes the surface, not the silhouette, and
+      // re-framing would pull the camera out of wherever the viewer put it.
+      // The render loop picks the new uniforms up on its next tick.
     },
     setArtworkAdjust({ scale, rotation, opacity } = {}) {
       if (scale != null) U.uArtScale.value = scale;
       if (rotation != null) U.uArtRot.value = rotation * Math.PI / 180;
       if (opacity != null) U.uArtOpacity.value = opacity;
-      frame(false);
     },
     setLabels(l) { labels = l; },
     setDims(on) { showDims = on; frame(false); },

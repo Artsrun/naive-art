@@ -27,6 +27,7 @@ window.I18N = {
     "cfg.art": { en: "Artwork" },
     "cfg.artPick": { en: "Try a painting on it" },
     "cfg.artClear": { en: "Remove" },
+    "cfg.artFail": { en: "That image could not be opened \u2014 try a JPG or PNG." },
     "cfg.artHint": { en: "Upload a painting to see it on the piece. It stays in your browser." },
     "cfg.artScale": { en: "Size" },
     "cfg.artRot": { en: "Rotation" },
